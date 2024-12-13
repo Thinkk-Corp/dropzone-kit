@@ -1,7 +1,15 @@
 {
-  "name": "vite-project",
-  "version": "0.0.1",
+  "name": "dropzone-kit",
+  "version": "0.0.3",
   "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "tailwind.config.js"
+  ],
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -39,5 +47,19 @@
     "typescript-eslint": "^8.18.0",
     "vite": "^6.0.3",
     "vite-plugin-dts": "^4.3.0"
-  }
+  },
+  "description": "A versatile Dropzone component library designed to simplify file upload functionality in user interfaces. Built with Tailwind CSS for seamless styling, it supports drag-and-drop file uploads, custom validation rules, and easy integration with other utilities for handling file types, sizes, and multiple file uploads. With an intuitive and responsive design, this library ensures an efficient and user-friendly experience for managing file inputs in modern web applications.",
+  "author": "Yusuf Kağan Kılıç <yusufkaankilic.yk@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thinkk-Corp/dropzone.git"
+  },
+  "homepage": "https://github.com/yusufkaanklc/dropzone#readme",
+  "keywords": [
+    "react",
+    "dropzone",
+    "library",
+    "components"
+  ]
 }
