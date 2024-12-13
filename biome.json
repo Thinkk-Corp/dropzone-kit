@@ -1,0 +1,50 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+	"files": {
+		"ignore": [
+			"./dist",
+			"./node_modules",
+			"./package-lock.json",
+			"./package.json",
+			"./tsconfig.json",
+			"./tsconfig.*.json",
+			"./tsconfig-cjs.json"
+		]
+	},
+	"formatter": {
+		"lineWidth": 130
+	},
+	"organizeImports": {
+		"enabled": true
+	},
+	"javascript": {
+		"formatter": {
+			"semicolons": "always"
+		},
+		"globals": ["process"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedImports": {
+					"level": "error",
+					"fix": "safe"
+				},
+				"noUnusedVariables": {
+					"level": "error"
+				},
+				"useExhaustiveDependencies": "info"
+			},
+			"suspicious": {
+				"noDebugger": {
+					"level": "error"
+				},
+				"noConsoleLog": {
+					"level": "error"
+				}
+			}
+		}
+	}
+}

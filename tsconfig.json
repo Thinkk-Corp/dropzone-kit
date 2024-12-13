@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+     "typeRoots": ["node_modules/@types", "./@types", "node_modules/@testing-library"],
+     "composite": true,
+     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+     "target": "ESNext",
+     "declaration": true, // TypeScript'in d.ts dosyaları oluşturmasını sağlar.
+     "emitDeclarationOnly": true, // Sadece d.ts dosyalarını oluşturur, JavaScript dosyaları oluşturmaz.
+     "outDir": "dist", // Çıktı dizini.
+     "useDefineForClassFields": true,
+     "lib": ["ESNext", "DOM", "DOM.Iterable"],
+     "module": "ESNext",
+     "skipLibCheck": true,
+     "esModuleInterop": true,
+     "moduleResolution": "bundler",
+     "allowImportingTsExtensions": true,
+     "resolveJsonModule": true,
+     "isolatedModules": true,
+     "noEmit": false,
+     "moduleDetection": "force",
+     "sourceMap": false,
+     "jsx": "react-jsx",
+     "strict": true,
+     "noUnusedLocals": true,
+     "noUnusedParameters": true,
+     "noFallthroughCasesInSwitch": true,
+     "paths": {
+        "@/*": ["./src/*"]
+     }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
+
+
