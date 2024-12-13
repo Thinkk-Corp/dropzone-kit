@@ -7,10 +7,10 @@ export type IFileRejection = { file: File; error: IFileError[] };
 export type IFileError = { code: IFileErrorTypes; message: string };
 
 export interface IDropzone extends Omit<HTMLAttributes<HTMLInputElement>, "onDrop" | "children"> {
-	onDrop: (files: File[], fileRejections: IFileRejection[], ref: RefObject<HTMLInputElement>) => void;
+	onDrop?: (files: File[], fileRejections: IFileRejection[], ref: RefObject<HTMLInputElement>) => void;
 	onDropAccepted?: (files: File[]) => void;
 	onDropRejected?: (fileRejections: IFileRejection[]) => void;
-	acceptedFormats: string[];
+	acceptedFormats?: string[];
 	validationMessages?: IFileError[];
 	maxSize?: number;
 	minSize?: number;
