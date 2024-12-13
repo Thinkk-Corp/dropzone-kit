@@ -44,7 +44,7 @@ export const Dropzone = ({
 	const defaultValidationMessages: IFileError[] = [
 		{
 			code: DropzoneErrorCode.FileInvalidType,
-			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats.join(", ")}.`,
+			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
 		},
 		{
 			code: DropzoneErrorCode.FileTooLarge,
@@ -77,12 +77,15 @@ export const Dropzone = ({
 		const fileType = file.type;
 		const validation = validationFinder("file-invalid-type");
 
-		const isValidType = acceptedFormats.some((format) => {
-			if (format.startsWith(".")) {
-				return file.name.endsWith(format);
-			}
-			return fileType.startsWith(format);
-		});
+		const isValidType = acceptedFormats
+			? acceptedFormats.some((format) => {
+					if (format.startsWith(".")) {
+						return file.name.endsWith(format);
+					}
+					return fileType.startsWith(format);
+				})
+			: true;
+
 		if (isValidType || !validation) return;
 		return validation;
 	};
