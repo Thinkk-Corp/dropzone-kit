@@ -233,13 +233,9 @@ export const Dropzone = ({
 
 		onDrop?.(validFiles, rejections, inputRef);
 
-		if (validFiles.length > 0) {
-			onDropAccepted?.(validFiles);
-		}
+		onDropAccepted?.(validFiles);
 
-		if (rejections.length > 0) {
-			onDropRejected?.(rejections);
-		}
+		onDropRejected?.(rejections);
 
 		if (!inputRef.current) return;
 		const dataTransfer = new DataTransfer();
