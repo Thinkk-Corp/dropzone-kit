@@ -8,17 +8,6 @@ const mockOnDropAccepted = jest.fn();
 const mockOnDropRejected = jest.fn();
 
 describe("Dropzone component", () => {
-	beforeEach(() => {
-		jest.clearAllMocks();
-
-		// DataTransfer nesnesini mock'lamak
-		global.DataTransfer = jest.fn().mockImplementation(() => ({
-			files: [],
-			setData: jest.fn(),
-			getData: jest.fn(),
-		}));
-	});
-
 	test("renders children correctly", () => {
 		render(
 			<Dropzone
@@ -59,9 +48,7 @@ describe("Dropzone component", () => {
 
 		const input = screen.getByRole("textbox", { hidden: true });
 
-		Object.defineProperty(input, "files", { value: [validFile] });
-
-		fireEvent.input(input);
+		fireEvent.change(input, { target: { files: [validFile] } });
 
 		expect(mockOnDropAccepted).toHaveBeenCalledWith([validFile]);
 		expect(mockOnDrop).toHaveBeenCalled();

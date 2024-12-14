@@ -1,6 +1,7 @@
 import { type HTMLAttributes, type InputHTMLAttributes, type RefObject, useEffect, useState, useRef } from "react";
-import type { IDropzone, IFileError, IFileErrorTypes, IFileRejection } from "@/interfaces";
+import type { IDropzone, IFileError } from "@/interfaces";
 import { DropzoneErrorCode } from "@/enums";
+import { validator } from "@/utils";
 
 /**
  * Dropzone bileşeni, dosya yükleme işlemleri için kullanılan bir React bileşenidir.
@@ -60,81 +61,6 @@ export const Dropzone = ({
 		},
 	];
 
-	// Belirli bir doğrulama kodu için hata mesajını bulur.
-	const validationFinder = (code: IFileErrorTypes) => {
-		return internalValidationMessages?.find((validation) => validation.code === code) || null;
-	};
-
-	// Maksimum dosya sayısını doğrular.
-	const tooManyFiles = () => {
-		const validation = validationFinder("too-many-files");
-		if (!validation || !maxFiles || files.length <= maxFiles) return;
-		return validation;
-	};
-
-	// Dosya türünü doğrular.
-	const fileInvalidType = (file: File) => {
-		const fileType = file.type;
-		const validation = validationFinder("file-invalid-type");
-
-		const isValidType = acceptedFormats
-			? acceptedFormats.some((format) => {
-					if (format.startsWith(".")) {
-						return file.name.endsWith(format);
-					}
-					return fileType.startsWith(format);
-				})
-			: true;
-
-		if (isValidType || !validation) return;
-		return validation;
-	};
-
-	// Dosya boyutunu (çok büyük) doğrular.
-	const fileTooLarge = (file: File) => {
-		const validation = validationFinder("file-too-large");
-		if (!validation || !maxSize || file.size <= maxSize) return;
-		return validation;
-	};
-
-	// Dosya boyutunu (çok küçük) doğrular.
-	const fileTooSmall = (file: File) => {
-		const validation = validationFinder("file-too-small");
-		if (!validation || !minSize || file.size >= minSize) return;
-		return validation;
-	};
-
-	/**
-	 * Dosyaları doğrulayan yardımcı işlev.
-	 * @param {File[]} files - Doğrulanacak dosyalar.
-	 * @returns {IFileRejection[]} Reddedilen dosyalar ve hata bilgileri.
-	 */
-	const validator = (files: File[]) => {
-		const rejections: IFileRejection[] = [];
-
-		for (const file of files) {
-			const fileRejections: IFileError[] = [];
-
-			const tooManyFilesError = tooManyFiles();
-			if (tooManyFilesError) fileRejections.push(tooManyFilesError);
-
-			const invalidTypeError = fileInvalidType(file);
-			if (invalidTypeError) fileRejections.push(invalidTypeError);
-
-			const tooLargeError = fileTooLarge(file);
-			if (tooLargeError) fileRejections.push(tooLargeError);
-
-			const tooSmallError = fileTooSmall(file);
-			if (tooSmallError) fileRejections.push(tooSmallError);
-
-			if (fileRejections.length > 0) {
-				rejections.push({ file, error: fileRejections });
-			}
-		}
-
-		return rejections;
-	};
-
 	/**
 	 * Dosya bırakma veya dosya seçme işlemini yönetir.
 	 * @param {React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>} event - Olay nesnesi.
@@ -181,10 +107,35 @@ export const Dropzone = ({
 
 	/**
 	 * Bir dosyayı listeden siler.
-	 * @param {File} file - Silinecek dosya.
+	 * @param {File} deletedFile - Silinecek dosya.
 	 */
-	const handleFileDelete = (file: File) => {
-		setFiles((prevFiles) => prevFiles.filter((f) => f !== file));
+	const handleFileDelete = (deletedFile: File) => {
+		const dataTransfer = new DataTransfer();
+
+		const updatedFiles = files.filter((file) => file.name !== deletedFile.name);
+
+		// Geçerli dosyaları dataTransfer objesine ekle
+		for (const file of updatedFiles) {
+			dataTransfer.items.add(file);
+		}
+
+		if (!inputRef.current) return;
+
+		const input = inputRef.current;
+
+		const fileList = dataTransfer.files;
+
+		// Input elemanının files özelliğini doğrudan değiştirmek yerine
+		// input'un değişim olayını tetikleyeceğiz
+		const changeEvent = new Event("change", { bubbles: true });
+
+		// input elemanını dataTransfer ile güncellemek için
+		input.files = fileList;
+
+		// Değişiklik olayını tetikle
+		input.dispatchEvent(changeEvent);
+
+		setFiles(updatedFiles);
 	};
 
 	// Container özellikleri
@@ -193,6 +144,7 @@ export const Dropzone = ({
 		style: {
 			position: "relative",
 		},
+		onDrop: handleDrop,
 		onDragOver: handleDragOver,
 	};
 
@@ -210,12 +162,12 @@ export const Dropzone = ({
 			opacity: 0,
 			cursor: "pointer",
 		},
+		tabIndex: -1,
 		ref: inputRef,
 		multiple,
 		accept: acceptedFormats ? acceptedFormats.join(", ") : undefined,
 		type: "file",
 		role: "textbox",
-		onDrop: handleDrop,
 		onChange: handleDrop,
 		onDragEnter: (e) => handleDrag(e, "enter"),
 		onDragLeave: (e) => handleDrag(e, "leave"),
@@ -228,23 +180,12 @@ export const Dropzone = ({
 	}, [validationMessages]);
 
 	useEffect(() => {
-		const rejections = validator(files);
+		const rejections = validator({ files, maxFiles, maxSize, minSize, messages: internalValidationMessages, acceptedFormats });
 		const validFiles = files.filter((file) => !rejections.some((rejection) => rejection.file.name === file.name));
 
 		onDrop?.(validFiles, rejections, inputRef);
-
 		onDropAccepted?.(validFiles);
-
 		onDropRejected?.(rejections);
-
-		if (!inputRef.current) return;
-		const dataTransfer = new DataTransfer();
-
-		for (const file of validFiles) {
-			dataTransfer.items.add(file);
-		}
-
-		inputRef.current.files = dataTransfer.files;
 	}, [files]);
 
 	if (typeof children !== "function") return null;
