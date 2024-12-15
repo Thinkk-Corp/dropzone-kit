@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type InputHTMLAttributes, type RefObject, useEffect, useState, useRef } from "react";
+import { type HTMLAttributes, type RefObject, useEffect, useState, useRef } from "react";
 import type { IDropzone, IFileError } from "@/interfaces";
 import { DropzoneErrorCode } from "@/enums";
 import { validator } from "@/utils";
@@ -151,7 +151,9 @@ export const Dropzone = ({
 	};
 
 	// Input özellikleri
-	const inputProps: InputHTMLAttributes<HTMLInputElement> & { ref: RefObject<HTMLInputElement | null> } = {
+	const inputProps: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
+		ref: RefObject<HTMLInputElement | null>;
+	} = {
 		className: "dropzone-input",
 		style: {
 			position: "absolute",

@@ -52,7 +52,7 @@ export interface IDropzone extends Omit<HTMLAttributes<HTMLInputElement>, "onDro
 		containerProps: HTMLAttributes<HTMLDivElement>;
 
 		// Input öğesinin HTML özellikleri.
-		inputProps: HTMLAttributes<HTMLInputElement>;
+		inputProps: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
 		// Silme işlemi için dosya silme fonksiyonu.
 		handleFileDelete: (file: File) => void;
