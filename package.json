@@ -1,6 +1,6 @@
 {
   "name": "dropzone-kit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
@@ -16,14 +16,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build"
   },
-  "peerDependencies": {
-    "jsdom": "^25.0.1",
-     "react": "19.0.0-rc-8b08e99e-20240713",
+  "dependencies": {
+    "react": "19.0.0-rc-8b08e99e-20240713",
     "react-dom": "19.0.0-rc-8b08e99e-20240713",
     "babel-plugin-react-compiler": "0.0.0-experimental-678214a-20241111",
     "eslint-plugin-react-compiler": "0.0.0-experimental-678214a-20241111"
   },
   "devDependencies": {
+    "jsdom": "^25.0.1",
     "ts-jest": "^29.2.5",
     "@biomejs/biome": "1.9.4",
     "@eslint/js": "^9.17.0",
