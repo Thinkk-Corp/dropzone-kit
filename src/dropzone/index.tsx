@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type InputHTMLAttributes, type RefObject, useEffect, useState, useRef, useCallback } from "react";
+import { type HTMLAttributes, type InputHTMLAttributes, type RefObject, useEffect, useState, useRef } from "react";
 import type { IDropzone, IFileError } from "@/interfaces";
 import { DropzoneErrorCode } from "@/enums";
 import { validator } from "@/utils";
@@ -42,27 +42,24 @@ export const Dropzone = ({
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	// Varsayılan doğrulama mesajları
-	const defaultValidationMessages = useCallback(
-		(): IFileError[] => [
-			{
-				code: DropzoneErrorCode.FileInvalidType,
-				message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
-			},
-			{
-				code: DropzoneErrorCode.FileTooLarge,
-				message: "Dosya boyutu çok büyük.",
-			},
-			{
-				code: DropzoneErrorCode.FileTooSmall,
-				message: "Dosya boyutu çok küçük.",
-			},
-			{
-				code: DropzoneErrorCode.TooManyFiles,
-				message: `Maksimum dosya sayısını aştınız. En fazla ${maxFiles} dosya yükleyebilirsiniz.`,
-			},
-		],
-		[acceptedFormats, maxFiles],
-	);
+	const defaultValidationMessages: IFileError[] = [
+		{
+			code: DropzoneErrorCode.FileInvalidType,
+			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
+		},
+		{
+			code: DropzoneErrorCode.FileTooLarge,
+			message: "Dosya boyutu çok büyük.",
+		},
+		{
+			code: DropzoneErrorCode.FileTooSmall,
+			message: "Dosya boyutu çok küçük.",
+		},
+		{
+			code: DropzoneErrorCode.TooManyFiles,
+			message: `Maksimum dosya sayısını aştınız. En fazla ${maxFiles} dosya yükleyebilirsiniz.`,
+		},
+	];
 
 	/**
 	 * Dosya bırakma veya dosya seçme işlemini yönetir.
@@ -101,7 +98,7 @@ export const Dropzone = ({
 	 * @param {React.DragEvent<HTMLInputElement>} _e - Olay nesnesi.
 	 * @param {"enter" | "leave"} type - Drag durumu.
 	 */
-	const handleDrag = (_e: React.DragEvent<HTMLInputElement>, type: "enter" | "leave") => {
+	const handleDrag = (_e: React.DragEvent<HTMLDivElement>, type: "enter" | "leave") => {
 		if (type === "enter") {
 			return setIsDragActive(true);
 		}
@@ -148,6 +145,8 @@ export const Dropzone = ({
 			position: "relative",
 		},
 		onDrop: handleDrop,
+		onDragEnter: (e) => handleDrag(e, "enter"),
+		onDragLeave: (e) => handleDrag(e, "leave"),
 		onDragOver: handleDragOver,
 	};
 
@@ -172,29 +171,42 @@ export const Dropzone = ({
 		type: "file",
 		role: "textbox",
 		onChange: handleDrop,
-		onDragEnter: (e) => handleDrag(e, "enter"),
-		onDragLeave: (e) => handleDrag(e, "leave"),
 		...props,
 	};
 
+	// Bu kısımda validasyon mesajları kayıt edilip formatlanıyor
 	useEffect(() => {
 		if (validationMessages) {
-			setInternalValidationMessages(validationMessages);
+			const formattedValidationMessages = defaultValidationMessages.reduce((acc, message) => {
+				const findValidCodeInCustomValidationMessages = validationMessages.find((msg) => msg.code === message.code);
+				if (!findValidCodeInCustomValidationMessages) {
+					acc.push(message);
+				} else {
+					acc.push(findValidCodeInCustomValidationMessages);
+				}
+				return acc;
+			}, [] as IFileError[]);
+
+			setInternalValidationMessages(formattedValidationMessages);
 		} else {
 			setInternalValidationMessages(defaultValidationMessages);
 		}
-	}, [validationMessages, defaultValidationMessages]);
+	}, [validationMessages]);
 
 	useEffect(() => {
 		const rejections = validator({ files, maxFiles, maxSize, minSize, messages: internalValidationMessages, acceptedFormats });
 		const validFiles = files.filter((file) => !rejections.some((rejection) => rejection.file.name === file.name));
 
 		onDrop?.(validFiles, rejections, inputRef);
-		onDropAccepted?.(validFiles);
-		onDropRejected?.(rejections);
+		if (validFiles.length > 0) {
+			onDropAccepted?.(validFiles);
+		}
+		if (rejections.length > 0) {
+			onDropRejected?.(rejections);
+		}
 	}, [files, internalValidationMessages]);
 
 	if (typeof children !== "function") return null;
 
-	return <div>{children({ containerProps, inputProps, handleFileDelete, isDragActive })}</div>;
+	return <div data-testid="dropzone">{children({ containerProps, inputProps, handleFileDelete, isDragActive })}</div>;
 };
