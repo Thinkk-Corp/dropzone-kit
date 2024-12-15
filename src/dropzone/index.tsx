@@ -200,12 +200,8 @@ export const Dropzone = ({
 		const validFiles = files.filter((file) => !rejections.some((rejection) => rejection.file.name === file.name));
 
 		onDrop?.(validFiles, rejections);
-		if (validFiles.length > 0) {
-			onDropAccepted?.(validFiles);
-		}
-		if (rejections.length > 0) {
-			onDropRejected?.(rejections);
-		}
+		onDropAccepted?.(validFiles);
+		onDropRejected?.(rejections);
 	}, [files, internalValidationMessages]);
 
 	if (typeof children !== "function") return null;

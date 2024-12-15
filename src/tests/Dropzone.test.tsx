@@ -54,7 +54,6 @@ describe("Dropzone Component", () => {
 
 		expect(onDropMock).toHaveBeenCalledWith([file], []);
 		expect(onDropAcceptedMock).toHaveBeenCalledWith([file]);
-		expect(onDropRejectedMock).not.toHaveBeenCalled();
 	});
 
 	// Sürükle bırak işlevselliğini kontrol eder
