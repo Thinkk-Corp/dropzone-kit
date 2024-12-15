@@ -2,41 +2,39 @@ import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-
-const ReactCompilerConfig = {
-	/* ... */
-};
-
 import { peerDependencies } from "./package.json";
 
-// https://vitejs.dev/config/
+// ReactCompilerConfig boşsa, gerek yoksa kaldırabilirsiniz.
+const ReactCompilerConfig = {
+	// Özel React Compiler yapılandırması, yoksa boş bırakılabilir
+};
+
+// Vite yapılandırması
 export default defineConfig({
 	build: {
 		lib: {
-			entry: "./src/index.ts", // Specifies the entry point for building the library.
-			name: "dropzone-kit", // Sets the name of the generated library.
-			fileName: (format) => `index.${format}.js`, // Generates the output file name based on the format.
-			formats: ["cjs", "es"], // Specifies the output formats (CommonJS and ES modules).
+			entry: "./src/index.ts", // Kütüphanenin giriş noktası.
+			name: "dropzone-kit", // Kütüphanenin adı.
+			fileName: (format) => `index.${format}.js`, // Çıktı dosyasının adı.
+			formats: ["cjs", "es"], // Çıktı formatları (CommonJS ve ES modülleri).
 		},
 		rollupOptions: {
-			external: [...Object.keys(peerDependencies)], // Defines external dependencies for Rollup bundling.
+			external: [...Object.keys(peerDependencies)], // Rollup için dış bağımlılıklar.
 		},
-		sourcemap: false, // Generates source maps for debugging.
-		emptyOutDir: true,
+		sourcemap: false, // Debugging için kaynak haritaları oluşturulmaz.
+		emptyOutDir: true, // Çıktı dizinini temizle
 	},
 	resolve: {
 		alias: {
-			"@": path.resolve(__dirname, "./src"),
+			"@": path.resolve(__dirname, "./src"), // Aliasing src dizinine.
 		},
 	},
 	plugins: [
 		react({
 			babel: {
-				plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
+				plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]], // React compiler için yapılandırma.
 			},
 		}),
-		dts({
-			rollupTypes: true,
-		}),
+		dts(),
 	],
 });

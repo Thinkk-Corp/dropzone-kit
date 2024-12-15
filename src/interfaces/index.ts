@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode, RefObject } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 // Dosya yüklemeleriyle ilgili farklı hata türlerini tanımlar.
 export type IFileErrorTypes = "file-invalid-type" | "file-too-large" | "file-too-small" | "too-many-files";
@@ -12,7 +12,7 @@ export type IFileError = { code: IFileErrorTypes; message: string };
 // Dropzone bileşeninin props'larını tanımlar. Standart HTML input özelliklerini genişletir ancak "onDrop" ve "children" özelliklerini özelleştirmeyi sağlar.
 export interface IDropzone extends Omit<HTMLAttributes<HTMLInputElement>, "onDrop" | "children"> {
 	// Dosyalar dropzone'a bırakıldığında tetiklenen isteğe bağlı callback fonksiyonu.
-	onDrop?: (files: File[], fileRejections: IFileRejection[], ref: RefObject<HTMLInputElement>) => void;
+	onDrop?: (files: File[], fileRejections: IFileRejection[]) => void;
 
 	// Kabul edilen dosyalar dropzone'a bırakıldığında tetiklenen isteğe bağlı callback fonksiyonu.
 	onDropAccepted?: (files: File[]) => void;

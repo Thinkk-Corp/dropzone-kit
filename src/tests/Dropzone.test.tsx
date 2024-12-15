@@ -52,7 +52,7 @@ describe("Dropzone Component", () => {
 
 		fireEvent.change(input, { target: { files: [file] } });
 
-		expect(onDropMock).toHaveBeenCalledWith([file], [], expect.any(Object));
+		expect(onDropMock).toHaveBeenCalledWith([file], []);
 		expect(onDropAcceptedMock).toHaveBeenCalledWith([file]);
 		expect(onDropRejectedMock).not.toHaveBeenCalled();
 	});
@@ -72,7 +72,7 @@ describe("Dropzone Component", () => {
 			dataTransfer: { files: [file] },
 		});
 
-		expect(onDropMock).toHaveBeenCalledWith([file], [], expect.any(Object));
+		expect(onDropMock).toHaveBeenCalledWith([file], []);
 	});
 
 	// Dosya kısıtlamalarını kontrol eder ve reddetme geri çağrısını tetikler
@@ -117,7 +117,7 @@ describe("Dropzone Component", () => {
 			dataTransfer: { files: [file] },
 		});
 
-		expect(onDropMock).toHaveBeenCalledWith([file], [], expect.any(Object));
+		expect(onDropMock).toHaveBeenCalledWith([file], []);
 	});
 
 	// Özel doğrulama mesajlarını uygular

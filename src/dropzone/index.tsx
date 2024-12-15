@@ -151,7 +151,7 @@ export const Dropzone = ({
 	};
 
 	// Input özellikleri
-	const inputProps: InputHTMLAttributes<HTMLInputElement> & { ref: RefObject<HTMLInputElement> } = {
+	const inputProps: InputHTMLAttributes<HTMLInputElement> & { ref: RefObject<HTMLInputElement | null> } = {
 		className: "dropzone-input",
 		style: {
 			position: "absolute",
@@ -197,7 +197,7 @@ export const Dropzone = ({
 		const rejections = validator({ files, maxFiles, maxSize, minSize, messages: internalValidationMessages, acceptedFormats });
 		const validFiles = files.filter((file) => !rejections.some((rejection) => rejection.file.name === file.name));
 
-		onDrop?.(validFiles, rejections, inputRef);
+		onDrop?.(validFiles, rejections);
 		if (validFiles.length > 0) {
 			onDropAccepted?.(validFiles);
 		}
