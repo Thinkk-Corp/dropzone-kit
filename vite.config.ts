@@ -35,6 +35,8 @@ export default defineConfig({
 				plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
 			},
 		}),
-		dts(),
+		dts({
+			rollupTypes: true,
+		}),
 	],
 });
