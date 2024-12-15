@@ -62,7 +62,7 @@ Projenize bu Dropzone bileşenini dahil etmek için aşağıdaki adımları taki
 
 | Prop Adı             | Tür                                                                                            | Varsayılan | Açıklama                                        |
 | -------------------- | ---------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------- |
-| `onDrop`             | `(files: File[], rejections: IFileRejection[], inputRef: RefObject<HTMLInputElement>) => void` | -          | Geçerli ve reddedilen dosyaları döndüren işlev. |
+| `onDrop`             | `(files: File[], rejections: IFileRejection[]) => void`                                        | -          | Geçerli ve reddedilen dosyaları döndüren işlev. |
 | `onDropRejected`     | `(rejections: IFileRejection[]) => void`                                                       | -          | Reddedilen dosyaları sağlayan işlev.            |
 | `onDropAccepted`     | `(files: File[]) => void`                                                                      | -          | Kabul edilen dosyaları sağlayan işlev.          |
 | `multiple`           | `boolean`                                                                                      | `true`     | Birden fazla dosya yüklenmesine izin verir.     |
@@ -81,7 +81,7 @@ Dropzone bileşeni, içerik düzenini özelleştirmek için `children` prop'unu 
 | ------------------ | ----------------------------------- | ------------------------------------------------------------------------------------ |
 | `containerProps`   | `ReactHTMLProps<HTMLDivElement>`    | Dropzone bileşeninin ana konteynerine uygulanması gereken HTML özelliklerini içerir. |
 | `inputProps`       | `React.HTMLProps<HTMLInputElement>` | Dosya yükleme input elemanına uygulanması gereken HTML özelliklerini içerir.         |
-| `handleFileDelete` | `() => void`                        | Yüklenen dosyayı silmek için kullanılan işlevi temsil eder.                          |
+| `handleFileDelete` | `(file:File) => void`                        | Yüklenen dosyayı silmek için kullanılan işlevi temsil eder.                          |
 | `isDragActive`     | `boolean`                           | Dropzone drag durumunu dönderir                                                      |
 
 ## Callback İşlevleri
