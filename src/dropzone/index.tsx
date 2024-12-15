@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type InputHTMLAttributes, type RefObject, useEffect, useState, useRef } from "react";
+import { type HTMLAttributes, type InputHTMLAttributes, type RefObject, useEffect, useState, useRef, useCallback } from "react";
 import type { IDropzone, IFileError } from "@/interfaces";
 import { DropzoneErrorCode } from "@/enums";
 import { validator } from "@/utils";
@@ -42,24 +42,27 @@ export const Dropzone = ({
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	// Varsayılan doğrulama mesajları
-	const defaultValidationMessages: IFileError[] = [
-		{
-			code: DropzoneErrorCode.FileInvalidType,
-			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
-		},
-		{
-			code: DropzoneErrorCode.FileTooLarge,
-			message: "Dosya boyutu çok büyük.",
-		},
-		{
-			code: DropzoneErrorCode.FileTooSmall,
-			message: "Dosya boyutu çok küçük.",
-		},
-		{
-			code: DropzoneErrorCode.TooManyFiles,
-			message: `Maksimum dosya sayısını aştınız. En fazla ${maxFiles} dosya yükleyebilirsiniz.`,
-		},
-	];
+	const defaultValidationMessages = useCallback(
+		(): IFileError[] => [
+			{
+				code: DropzoneErrorCode.FileInvalidType,
+				message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
+			},
+			{
+				code: DropzoneErrorCode.FileTooLarge,
+				message: "Dosya boyutu çok büyük.",
+			},
+			{
+				code: DropzoneErrorCode.FileTooSmall,
+				message: "Dosya boyutu çok küçük.",
+			},
+			{
+				code: DropzoneErrorCode.TooManyFiles,
+				message: `Maksimum dosya sayısını aştınız. En fazla ${maxFiles} dosya yükleyebilirsiniz.`,
+			},
+		],
+		[acceptedFormats, maxFiles],
+	);
 
 	/**
 	 * Dosya bırakma veya dosya seçme işlemini yönetir.
@@ -175,9 +178,12 @@ export const Dropzone = ({
 	};
 
 	useEffect(() => {
-		if (validationMessages) return;
-		setInternalValidationMessages(defaultValidationMessages);
-	}, [validationMessages]);
+		if (validationMessages) {
+			setInternalValidationMessages(validationMessages);
+		} else {
+			setInternalValidationMessages(defaultValidationMessages);
+		}
+	}, [validationMessages, defaultValidationMessages]);
 
 	useEffect(() => {
 		const rejections = validator({ files, maxFiles, maxSize, minSize, messages: internalValidationMessages, acceptedFormats });
@@ -186,7 +192,7 @@ export const Dropzone = ({
 		onDrop?.(validFiles, rejections, inputRef);
 		onDropAccepted?.(validFiles);
 		onDropRejected?.(rejections);
-	}, [files]);
+	}, [files, internalValidationMessages]);
 
 	if (typeof children !== "function") return null;
 
