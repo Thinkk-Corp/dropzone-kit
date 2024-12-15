@@ -23,7 +23,7 @@ export const Dropzone = ({
 	onDropRejected,
 	onDropAccepted,
 	multiple = true,
-	acceptedFormats,
+	acceptedFormats = ["/"],
 	maxFiles,
 	maxSize,
 	minSize,
@@ -45,7 +45,7 @@ export const Dropzone = ({
 	const defaultValidationMessages: IFileError[] = [
 		{
 			code: DropzoneErrorCode.FileInvalidType,
-			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
+			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats.join(", ")}.`,
 		},
 		{
 			code: DropzoneErrorCode.FileTooLarge,
@@ -169,7 +169,7 @@ export const Dropzone = ({
 		tabIndex: -1,
 		ref: inputRef,
 		multiple,
-		accept: acceptedFormats ? acceptedFormats.join(", ") : undefined,
+		accept: acceptedFormats.join(", "),
 		type: "file",
 		role: "textbox",
 		onChange: handleDrop,

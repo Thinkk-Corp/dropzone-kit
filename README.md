@@ -81,7 +81,7 @@ Dropzone bileşeni, içerik düzenini özelleştirmek için `children` prop'unu 
 | ------------------ | ----------------------------------- | ------------------------------------------------------------------------------------ |
 | `containerProps`   | `ReactHTMLProps<HTMLDivElement>`    | Dropzone bileşeninin ana konteynerine uygulanması gereken HTML özelliklerini içerir. |
 | `inputProps`       | `React.HTMLProps<HTMLInputElement>` | Dosya yükleme input elemanına uygulanması gereken HTML özelliklerini içerir.         |
-| `handleFileDelete` | `(file:File) => void`                        | Yüklenen dosyayı silmek için kullanılan işlevi temsil eder.                          |
+| `handleFileDelete` | `(file:File) => void`               | Yüklenen dosyayı silmek için kullanılan işlevi temsil eder.                          |
 | `isDragActive`     | `boolean`                           | Dropzone drag durumunu dönderir                                                      |
 
 ## Callback İşlevleri
@@ -110,7 +110,7 @@ Bileşen tamamen özelleştirilebilir şekilde tasarlanmıştır. `children` pro
 [
 		{
 			code: "file-invalid-type",
-			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
+			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats.join(", ")}.`,
 		},
 		{
 			code: "file-too-large",
