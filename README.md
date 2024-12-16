@@ -54,7 +54,7 @@ Projenize bu Dropzone bileşenini dahil etmek için aşağıdaki adımları taki
 - Projeyi yükleyin:
 
   ```bash
-  npm install dropzone-kit
+  npm install react-dropzone-kit
 
   ```
 
