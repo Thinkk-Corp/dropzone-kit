@@ -60,7 +60,7 @@ Projenize bu Dropzone bileşenini dahil etmek için aşağıdaki adımları taki
 
 - Dropzone bileşenini React projenize import Edin:
   ```tsx
-  import { Dropzone } from "@/components/Dropzone";
+  import { Dropzone } from "react-dropzone-kit";
   ```
 
 ## Prop Adları
