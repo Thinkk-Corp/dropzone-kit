@@ -13,7 +13,7 @@ Bu proje, dosya yükleme işlemleri için kullanılan bir React bileşeni olan D
 ## Kullanım
 
 ```tsx
-import { Dropzone } from "@/components/Dropzone";
+import { Dropzone } from "react-dropzone-kit";
 
 const App = () => {
   const handleDrop = (acceptedFiles, rejections) => {
