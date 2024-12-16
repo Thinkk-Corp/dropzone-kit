@@ -1,6 +1,6 @@
 {
-  "name": "dropzone-kit",
-  "version": "1.0.13",
+  "name": "react-dropzone-kit",
+  "version": "1.0.14",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
