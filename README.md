@@ -77,6 +77,7 @@ Projenize bu Dropzone bileşenini dahil etmek için aşağıdaki adımları taki
 | `minSize`            | `number`                                                                                       | -          | Yüklenebilir minimum dosya boyutu (byte).       |
 | `validationMessages` | `IFileError[]`                                                                                 | `validationMessages`          | Özel hata mesajları.                            |
 | `children`           | `({ containerProps, inputProps, handleFileDelete, isDragActive }) => JSX.Element`              | Zorunlu    | Özelleştirilebilir içerik işlevi.               |
+| `initialFiles`       | `File[]`                                                                                       | -          | Başlangıç dosyalarını belirler.
 
 ### `children` Prop'u Açıklaması
 
