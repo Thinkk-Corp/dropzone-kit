@@ -69,11 +69,11 @@ export const Dropzone = ({
 		(event: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>) => {
 			event.preventDefault();
 			const newFiles = "dataTransfer" in event ? Array.from(event.dataTransfer.files) : Array.from(event.target.files || []);
-			if (!newFiles.length) return;
+			if (!newFiles.length || (!multiple && files.length > 0)) return;
 			const uniquedFiles = newFiles.filter((newFile) => !files.some((file) => file.name === newFile.name));
 			setFiles((prev) => [...prev, ...uniquedFiles]);
 		},
-		[files],
+		[files, multiple],
 	);
 
 	/**
@@ -150,6 +150,7 @@ export const Dropzone = ({
 		accept: acceptedFormats ? acceptedFormats.join(", ") : undefined,
 		type: "file",
 		role: "textbox",
+		multiple,
 		onChange: handleDrop,
 		...props,
 	};

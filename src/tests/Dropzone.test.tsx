@@ -78,6 +78,19 @@ describe("Dropzone Component", () => {
 		expect(onDropMock).toHaveBeenCalledWith([file], []);
 	});
 
+	it("should not upload file when multiple false and one file uploaded", () => {
+		setup({ onDrop: onDropMock, multiple: false });
+
+		const input = screen.getByRole("textbox");
+		const file1 = createFile(4, "example.txt", "text/plain");
+		const file2 = createFile(4, "examplee.txt", "text/plain");
+
+		fireEvent.change(input, { target: { files: [file1] } });
+		fireEvent.change(input, { target: { files: [file2] } });
+
+		expect(onDropMock).toHaveBeenCalledWith([file1], []);
+	});
+
 	// Dosya kısıtlamalarını kontrol eder ve reddetme geri çağrısını tetikler
 	it("validates file constraints and triggers rejection callbacks", () => {
 		const onDropRejectedMock = jest.fn();
