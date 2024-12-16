@@ -4,11 +4,6 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { peerDependencies } from "./package.json";
 
-// ReactCompilerConfig boşsa, gerek yoksa kaldırabilirsiniz.
-const ReactCompilerConfig = {
-	// Özel React Compiler yapılandırması, yoksa boş bırakılabilir
-};
-
 // Vite yapılandırması
 export default defineConfig({
 	build: {
@@ -29,12 +24,5 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"), // Aliasing src dizinine.
 		},
 	},
-	plugins: [
-		react({
-			babel: {
-				plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]], // React compiler için yapılandırma.
-			},
-		}),
-		dts(),
-	],
+	plugins: [react({}), dts()],
 });

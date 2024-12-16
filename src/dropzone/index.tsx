@@ -2,6 +2,8 @@ import { type HTMLAttributes, type RefObject, useEffect, useState, useRef } from
 import type { IDropzone, IFileError } from "@/interfaces";
 import { DropzoneErrorCode } from "@/enums";
 import { validator } from "@/utils";
+import { useCallback } from "react";
+import { useMemo } from "react";
 
 /**
  * Dropzone bileşeni, dosya yükleme işlemleri için kullanılan bir React bileşenidir.
@@ -42,101 +44,77 @@ export const Dropzone = ({
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	// Varsayılan doğrulama mesajları
-	const defaultValidationMessages: IFileError[] = [
-		{
-			code: DropzoneErrorCode.FileInvalidType,
-			message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
-		},
-		{
-			code: DropzoneErrorCode.FileTooLarge,
-			message: "Dosya boyutu çok büyük.",
-		},
-		{
-			code: DropzoneErrorCode.FileTooSmall,
-			message: "Dosya boyutu çok küçük.",
-		},
-		{
-			code: DropzoneErrorCode.TooManyFiles,
-			message: `Maksimum dosya sayısını aştınız. En fazla ${maxFiles} dosya yükleyebilirsiniz.`,
-		},
-	];
+	const defaultValidationMessages = useMemo(
+		() => [
+			{
+				code: DropzoneErrorCode.FileInvalidType,
+				message: `Geçersiz dosya türü. Sadece şu türler destekleniyor: ${acceptedFormats ? acceptedFormats.join(", ") : "*"}.`,
+			},
+			{ code: DropzoneErrorCode.FileTooLarge, message: "Dosya boyutu çok büyük." },
+			{ code: DropzoneErrorCode.FileTooSmall, message: "Dosya boyutu çok küçük." },
+			{
+				code: DropzoneErrorCode.TooManyFiles,
+				message: `Maksimum dosya sayısını aştınız. En fazla ${maxFiles} dosya yükleyebilirsiniz.`,
+			},
+		],
+		[acceptedFormats, maxFiles],
+	);
 
 	/**
 	 * Dosya bırakma veya dosya seçme işlemini yönetir.
 	 * @param {React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>} event - Olay nesnesi.
 	 */
-	const handleDrop = (event: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>) => {
-		event.preventDefault();
-
-		let newFiles: File[] = [];
-
-		// Drag and Drop işlemi mi yoksa input değişikliği mi olduğunu kontrol eder.
-		if ("dataTransfer" in event) {
-			newFiles = Array.from(event.dataTransfer.files);
-		} else if (event.target?.files) {
-			newFiles = Array.from(event.target.files);
-		}
-
-		if (!newFiles.length) return;
-
-		// Aynı isimdeki dosyaları filtreler.
-		const uniquedFiles = newFiles.filter((newFile) => !files.some((file) => file.name === newFile.name));
-
-		setFiles((prev) => [...prev, ...uniquedFiles]);
-	};
+	const handleDrop = useCallback(
+		(event: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>) => {
+			event.preventDefault();
+			const newFiles = "dataTransfer" in event ? Array.from(event.dataTransfer.files) : Array.from(event.target.files || []);
+			if (!newFiles.length) return;
+			const uniquedFiles = newFiles.filter((newFile) => !files.some((file) => file.name === newFile.name));
+			setFiles((prev) => [...prev, ...uniquedFiles]);
+		},
+		[files],
+	);
 
 	/**
 	 * Drag over olayını yönetir.
 	 * @param {React.DragEvent<HTMLDivElement>} event - Olay nesnesi.
 	 */
-	const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+	const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
-	};
+	}, []);
 
 	/**
 	 * Drag işlemi başladığında veya bittiğinde tetiklenir.
 	 * @param {React.DragEvent<HTMLInputElement>} _e - Olay nesnesi.
 	 * @param {"enter" | "leave"} type - Drag durumu.
 	 */
-	const handleDrag = (_e: React.DragEvent<HTMLDivElement>, type: "enter" | "leave") => {
-		if (type === "enter") {
-			return setIsDragActive(true);
-		}
-		setIsDragActive(false);
-	};
+	const handleDrag = useCallback((type: "enter" | "leave") => {
+		setIsDragActive(type === "enter");
+	}, []);
 
 	/**
 	 * Bir dosyayı listeden siler.
 	 * @param {File} deletedFile - Silinecek dosya.
 	 */
-	const handleFileDelete = (deletedFile: File) => {
-		const dataTransfer = new DataTransfer();
+	const handleFileDelete = useCallback(
+		(deletedFile: File) => {
+			setFiles((prev) => prev.filter((file) => file.name !== deletedFile.name));
 
-		const updatedFiles = files.filter((file) => file.name !== deletedFile.name);
+			if (!inputRef.current) return;
 
-		// Geçerli dosyaları dataTransfer objesine ekle
-		for (const file of updatedFiles) {
-			dataTransfer.items.add(file);
-		}
+			const dataTransfer = new DataTransfer();
 
-		if (!inputRef.current) return;
+			for (const file of files) {
+				if (file.name !== deletedFile.name) {
+					dataTransfer.items.add(file);
+				}
+			}
 
-		const input = inputRef.current;
-
-		const fileList = dataTransfer.files;
-
-		// Input elemanının files özelliğini doğrudan değiştirmek yerine
-		// input'un değişim olayını tetikleyeceğiz
-		const changeEvent = new Event("change", { bubbles: true });
-
-		// input elemanını dataTransfer ile güncellemek için
-		input.files = fileList;
-
-		// Değişiklik olayını tetikle
-		input.dispatchEvent(changeEvent);
-
-		setFiles(updatedFiles);
-	};
+			inputRef.current.files = dataTransfer.files;
+			inputRef.current.dispatchEvent(new Event("change", { bubbles: true }));
+		},
+		[files],
+	);
 
 	// Container özellikleri
 	const containerProps: HTMLAttributes<HTMLDivElement> = {
@@ -145,8 +123,8 @@ export const Dropzone = ({
 			position: "relative",
 		},
 		onDrop: handleDrop,
-		onDragEnter: (e) => handleDrag(e, "enter"),
-		onDragLeave: (e) => handleDrag(e, "leave"),
+		onDragEnter: () => handleDrag("enter"),
+		onDragLeave: () => handleDrag("leave"),
 		onDragOver: handleDragOver,
 	};
 
@@ -179,21 +157,15 @@ export const Dropzone = ({
 	// Bu kısımda validasyon mesajları kayıt edilip formatlanıyor
 	useEffect(() => {
 		if (validationMessages) {
-			const formattedValidationMessages = defaultValidationMessages.reduce((acc, message) => {
-				const findValidCodeInCustomValidationMessages = validationMessages.find((msg) => msg.code === message.code);
-				if (!findValidCodeInCustomValidationMessages) {
-					acc.push(message);
-				} else {
-					acc.push(findValidCodeInCustomValidationMessages);
-				}
-				return acc;
-			}, [] as IFileError[]);
+			const formattedValidationMessages = defaultValidationMessages.map(
+				(message) => validationMessages.find((msg) => msg.code === message.code) || message,
+			);
 
 			setInternalValidationMessages(formattedValidationMessages);
 		} else {
 			setInternalValidationMessages(defaultValidationMessages);
 		}
-	}, [validationMessages]);
+	}, [validationMessages, defaultValidationMessages]);
 
 	useEffect(() => {
 		const rejections = validator({ files, maxFiles, maxSize, minSize, messages: internalValidationMessages, acceptedFormats });

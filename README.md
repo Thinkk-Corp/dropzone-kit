@@ -42,14 +42,19 @@ const App = () => {
 
 ```
 
+### Ön Gereksinimler
+
+react@19.x.x, react-dom@19.x.x
+
+
 ### Kurulum
 
 Projenize bu Dropzone bileşenini dahil etmek için aşağıdaki adımları takip edebilirsiniz:
 
-- Gerekli bağımlılıkları yükleyin:
+- Projeyi yükleyin:
 
   ```bash
-  npm install
+  npm install dropzone-kit
 
   ```
 
