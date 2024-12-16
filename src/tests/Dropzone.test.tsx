@@ -14,6 +14,13 @@ jest.mock("@/utils", () => ({
 	}),
 }));
 
+// Belirtilen boyut, ad ve türde sahte bir dosya oluşturur
+const createFile = (size: number, name: string, type: string) => {
+	const content = new Array(size).fill("a").join("");
+	return new File([content], name, { type });
+};
+
+const onDropMock = jest.fn();
 const mockValidator = require("@/utils").validator;
 
 describe("Dropzone Component", () => {
@@ -40,7 +47,6 @@ describe("Dropzone Component", () => {
 
 	// Dosya seçim işlevselliğini kontrol eder
 	it("handles file selection via input", () => {
-		const onDropMock = jest.fn();
 		const onDropAcceptedMock = jest.fn();
 		const onDropRejectedMock = jest.fn();
 
@@ -48,7 +54,7 @@ describe("Dropzone Component", () => {
 
 		const input = screen.getByRole("textbox");
 
-		const file = new File(["content"], "example.txt", { type: "text/plain" });
+		const file = createFile(4, "example.txt", "text/plain");
 
 		fireEvent.change(input, { target: { files: [file] } });
 
@@ -58,13 +64,11 @@ describe("Dropzone Component", () => {
 
 	// Sürükle bırak işlevselliğini kontrol eder
 	it("handles drag-and-drop functionality", () => {
-		const onDropMock = jest.fn();
-
 		setup({ onDrop: onDropMock });
 
 		const container = screen.getByTestId("dropzone-container");
 
-		const file = new File(["content"], "example.txt", { type: "text/plain" });
+		const file = createFile(4, "example.txt", "text/plain");
 
 		fireEvent.dragOver(container);
 		fireEvent.drop(container, {

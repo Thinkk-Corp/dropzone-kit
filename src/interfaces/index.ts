@@ -11,6 +11,8 @@ export type IFileError = { code: IFileErrorTypes; message: string };
 
 // Dropzone bileşeninin props'larını tanımlar. Standart HTML input özelliklerini genişletir ancak "onDrop" ve "children" özelliklerini özelleştirmeyi sağlar.
 export interface IDropzone extends Omit<HTMLAttributes<HTMLInputElement>, "onDrop" | "children"> {
+	initialFiles?: File[];
+
 	// Dosyalar dropzone'a bırakıldığında tetiklenen isteğe bağlı callback fonksiyonu.
 	onDrop?: (files: File[], fileRejections: IFileRejection[]) => void;
 

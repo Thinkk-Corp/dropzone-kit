@@ -25,6 +25,7 @@ export const Dropzone = ({
 	onDropRejected,
 	onDropAccepted,
 	multiple = true,
+	initialFiles,
 	acceptedFormats,
 	maxFiles,
 	maxSize,
@@ -146,13 +147,25 @@ export const Dropzone = ({
 		},
 		tabIndex: -1,
 		ref: inputRef,
-		multiple,
 		accept: acceptedFormats ? acceptedFormats.join(", ") : undefined,
 		type: "file",
 		role: "textbox",
 		onChange: handleDrop,
 		...props,
 	};
+
+	useEffect(() => {
+		if (!initialFiles || !inputRef.current) return;
+
+		const dataTransfer = new DataTransfer();
+
+		for (const initialFile of initialFiles) {
+			dataTransfer.items.add(initialFile);
+		}
+
+		inputRef.current.files = dataTransfer.files;
+		inputRef.current.dispatchEvent(new Event("change", { bubbles: true }));
+	}, [initialFiles]);
 
 	// Bu kısımda validasyon mesajları kayıt edilip formatlanıyor
 	useEffect(() => {
@@ -170,7 +183,6 @@ export const Dropzone = ({
 	useEffect(() => {
 		const rejections = validator({ files, maxFiles, maxSize, minSize, messages: internalValidationMessages, acceptedFormats });
 		const validFiles = files.filter((file) => !rejections.some((rejection) => rejection.file.name === file.name));
-
 		onDrop?.(validFiles, rejections);
 		onDropRejected?.(rejections);
 		onDropAccepted?.(validFiles);
