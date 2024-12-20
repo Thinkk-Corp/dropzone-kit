@@ -1,9 +1,7 @@
-import { type HTMLAttributes, type RefObject, useEffect, useState, useRef } from "react";
-import type { IDropzone, IFileError } from "@/interfaces";
 import { DropzoneErrorCode } from "@/enums";
+import type { IDropzone, IFileError } from "@/interfaces";
 import { validator } from "@/utils";
-import { useCallback } from "react";
-import { useMemo } from "react";
+import { type HTMLAttributes, type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /**
  * Dropzone bileşeni, dosya yükleme işlemleri için kullanılan bir React bileşenidir.

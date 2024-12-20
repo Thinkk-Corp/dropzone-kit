@@ -1,5 +1,5 @@
-import path from "node:path";
 import react from "@vitejs/plugin-react";
+import path from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { peerDependencies } from "./package.json";
@@ -16,7 +16,7 @@ export default defineConfig({
 		rollupOptions: {
 			external: [...Object.keys(peerDependencies)], // Rollup için dış bağımlılıklar.
 		},
-		sourcemap: false, // Debugging için kaynak haritaları oluşturulmaz.
+		sourcemap: true, // Debugging için kaynak haritaları oluşturulmaz.
 		emptyOutDir: true, // Çıktı dizinini temizle
 	},
 	resolve: {

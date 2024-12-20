@@ -7,8 +7,7 @@
   "types": "dist/src/index.d.ts",
   "files": [
     "dist",
-    "package.json",
-    "tailwind.config.js"
+    "package.json"
   ],
   "scripts": {
     "test": "jest",
@@ -17,8 +16,8 @@
     "build": "tsc -b && vite build"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -47,9 +46,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Thinkk-Corp/dropzone-kit.git"
+    "url": "https://github.com/Thinkk-Corp/react-dropzone-kit.git"
   },
-  "homepage": "https://github.com/Thinkk-Corp/dropzone-kit#readme",
+  "homepage": "https://github.com/Thinkk-Corp/react-dropzone-kit#readme",
   "keywords": [
     "react",
     "dropzone",
