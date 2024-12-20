@@ -14,15 +14,23 @@ export default defineConfig({
 			formats: ["cjs", "es"], // Çıktı formatları (CommonJS ve ES modülleri).
 		},
 		rollupOptions: {
-			external: [...Object.keys(peerDependencies)], // Rollup için dış bağımlılıklar.
+			external: [
+				...Object.keys(peerDependencies), // Rollup için dış bağımlılıklar.
+			],
+			output: {
+				globals: {
+					react: "React", // React bağımlılığını global olarak tanımla.
+					"react-dom": "ReactDOM", // react-dom bağımlılığını global olarak tanımla.
+				},
+			},
 		},
-		sourcemap: true, // Debugging için kaynak haritaları oluşturulmaz.
-		emptyOutDir: true, // Çıktı dizinini temizle
+		sourcemap: true, // Debugging için kaynak haritaları oluşturulacak.
+		emptyOutDir: true, // Çıktı dizinini temizle.
 	},
 	resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"), // Aliasing src dizinine.
 		},
 	},
-	plugins: [react({}), dts()],
+	plugins: [react(), dts()],
 });

@@ -1,35 +1,34 @@
 {
-  "compilerOptions": {
+   "compilerOptions": {
      "typeRoots": ["node_modules/@types", "./@types", "node_modules/@testing-library"],
-     "composite": true,
-     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-     "target": "ESNext",
-     "declaration": true, // TypeScript'in d.ts dosyaları oluşturmasını sağlar.
+     "composite": true, // Projeyi modüler hale getirmek için kullanılır, dışa bağımlı projelerde gereklidir.
+     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // Derleme bilgilerini tutacak dosya yolu
+     "target": "ESNext", // Modern JavaScript çıkışı
+     "declaration": true, // TypeScript'in d.ts dosyalarını oluşturmasını sağlar.
      "emitDeclarationOnly": true, // Sadece d.ts dosyalarını oluşturur, JavaScript dosyaları oluşturmaz.
-     "outDir": "dist", // Çıktı dizini.
-     "useDefineForClassFields": true,
-     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-     "module": "ESNext",
-     "skipLibCheck": false,
-     "esModuleInterop": true,
-     "moduleResolution": "node",
-     "allowImportingTsExtensions": true,
-     "resolveJsonModule": true,
-     "isolatedModules": true,
-     "noEmit": false,
-     "moduleDetection": "force",
-     "sourceMap": true,
-     "jsx": "react-jsx",
-     "strict": true,
-     "noUnusedLocals": true,
-     "noUnusedParameters": true,
-     "noFallthroughCasesInSwitch": true,
+     "outDir": "dist", // Çıktı dizini
+     "useDefineForClassFields": true, // ESNext sınıf alanları için tanımlamayı kullan
+     "lib": ["ESNext", "DOM", "DOM.Iterable"], // Çalışma zamanı kütüphaneleri
+     "module": "ESNext", // Modül türü
+     "skipLibCheck": false, // Kitaplık dosyalarını kontrol et
+     "esModuleInterop": true, // ES modülleri ile uyumlu hale getirir
+     "moduleResolution": "node", // Node modül çözümleme stratejisi
+     "allowImportingTsExtensions": true, // TypeScript uzantılarının ithalatına izin verir
+     "resolveJsonModule": true, // JSON modüllerini çözümlemeye izin verir
+     "isolatedModules": true, // Modüllerin izole edilmesini sağlar
+     "noEmit": false, // JavaScript dosyaları oluşturulmasını sağlar
+     "moduleDetection": "force", // Modül tespiti için zorla kullan
+     "sourceMap": true, // Sourcemap'leri üretir
+     "jsx": "react-jsx", // React 17 JSX dönüşümünü kullanır
+     "strict": true, // Tüm sıkı modları etkinleştirir
+     "noUnusedLocals": true, // Kullanılmayan yerel değişkenler için hata verir
+     "noUnusedParameters": true, // Kullanılmayan parametreler için hata verir
+     "noFallthroughCasesInSwitch": true, // Switch-case ifadelerinde düşüş engeller
      "paths": {
-        "@/*": ["./src/*"]
+       "@/*": ["./src/*"] // Aliases kullanarak src klasörüne hızlı erişim
      }
-  },
-  "include": ["src"],
-  "exclude": ["node_modules"]
-}
-
-
+   },
+   "include": ["src"], // Kütüphanenin kaynak kodları
+   "exclude": ["node_modules", "dist"] // node_modules ve dist klasörlerini dışla
+ }
+ 

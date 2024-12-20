@@ -154,7 +154,7 @@ export const Dropzone = ({
 	};
 
 	useEffect(() => {
-		if (!initialFiles || !inputRef.current) return;
+		if (!initialFiles || !inputRef.current || initialFiles.length === 0) return;
 
 		const dataTransfer = new DataTransfer();
 
