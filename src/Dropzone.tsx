@@ -1,6 +1,6 @@
-import { DropzoneErrorCode } from "@/enums";
-import type { IDropzone, IFileError } from "@/interfaces";
-import { validator } from "@/utils";
+import { DropzoneErrorCode } from "@/Enums";
+import type { IDropzone, IFileError } from "@/Interfaces";
+import { validator } from "@/Utils";
 import { type HTMLAttributes, type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /**
@@ -67,9 +67,13 @@ export const Dropzone = ({
 		(event: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>) => {
 			event.preventDefault();
 			const newFiles = "dataTransfer" in event ? Array.from(event.dataTransfer.files) : Array.from(event.target.files || []);
-			if (!newFiles.length || (!multiple && files.length > 0)) return;
+			if (!newFiles.length) return;
 			const uniquedFiles = newFiles.filter((newFile) => !files.some((file) => file.name === newFile.name));
-			setFiles((prev) => [...prev, ...uniquedFiles]);
+			if (multiple) {
+				setFiles((prev) => [...prev, ...uniquedFiles]);
+				return;
+			}
+			setFiles(uniquedFiles);
 		},
 		[files, multiple],
 	);

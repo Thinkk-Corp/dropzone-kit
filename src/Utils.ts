@@ -1,4 +1,4 @@
-import type { IFileError, IFileErrorTypes, IFileRejection } from "@/interfaces";
+import type { IFileError, IFileErrorTypes, IFileRejection } from "@/Interfaces";
 
 /**
  * Dosya doğrulama işlevi.
