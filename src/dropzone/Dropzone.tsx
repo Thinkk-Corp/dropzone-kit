@@ -1,6 +1,6 @@
 import { DropzoneErrorCode } from "@/Enums";
 import type { IDropzone, IFileError } from "@/Interfaces";
-import { validator } from "@/Utils";
+import { validator } from "@/validator/Validator";
 import { type HTMLAttributes, type RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /**

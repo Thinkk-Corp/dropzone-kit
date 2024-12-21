@@ -12,7 +12,7 @@
      "module": "ESNext", // Modül türü
      "skipLibCheck": false, // Kitaplık dosyalarını kontrol et
      "esModuleInterop": true, // ES modülleri ile uyumlu hale getirir
-     "moduleResolution": "node", // Node modül çözümleme stratejisi
+     "moduleResolution": "bundler", // Node modül çözümleme stratejisi
      "allowImportingTsExtensions": true, // TypeScript uzantılarının ithalatına izin verir
      "resolveJsonModule": true, // JSON modüllerini çözümlemeye izin verir
      "isolatedModules": true, // Modüllerin izole edilmesini sağlar

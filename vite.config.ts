@@ -17,12 +17,6 @@ export default defineConfig({
 			external: [
 				...Object.keys(peerDependencies), // Rollup için dış bağımlılıklar.
 			],
-			output: {
-				globals: {
-					react: "React", // React bağımlılığını global olarak tanımla.
-					"react-dom": "ReactDOM", // react-dom bağımlılığını global olarak tanımla.
-				},
-			},
 		},
 		sourcemap: true, // Debugging için kaynak haritaları oluşturulacak.
 		emptyOutDir: true, // Çıktı dizinini temizle.
