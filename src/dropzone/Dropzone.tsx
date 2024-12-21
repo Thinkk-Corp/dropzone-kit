@@ -166,6 +166,7 @@ export const Dropzone = ({
 		for (const file of files) {
 			dataTransfer.items.add(file);
 		}
+
 		inputRef.current.files = dataTransfer.files;
 	}, []);
 
@@ -173,9 +174,6 @@ export const Dropzone = ({
 	const containerProps: HTMLAttributes<HTMLDivElement> = {
 		className: "dropzone-container",
 		style: { position: "relative" },
-		onDrop: handleDrop,
-		onDragEnter: () => handleDrag("enter"),
-		onDragLeave: () => handleDrag("leave"),
 		onDragOver: handleDragOver,
 	};
 
@@ -201,6 +199,9 @@ export const Dropzone = ({
 		type: "file",
 		role: "textbox",
 		multiple,
+		onDragEnter: () => handleDrag("enter"),
+		onDragLeave: () => handleDrag("leave"),
+		onDrop: handleDrop,
 		onChange: handleDrop,
 		onClick: handleClick,
 		...props,

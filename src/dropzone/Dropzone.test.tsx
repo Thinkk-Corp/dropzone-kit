@@ -15,6 +15,13 @@ vi.mock("@/validator/Validator", () => ({
 	}),
 }));
 
+const setFiles = (files: File[]) => {
+	const dataTransfer = new DataTransfer();
+	// biome-ignore lint/complexity/noForEach: <explanation>
+	files.forEach((file) => dataTransfer.items.add(file));
+	return dataTransfer.files;
+};
+
 // Belirtilen boyut, ad ve türde sahte bir dosya oluşturur
 const createFile = (size: number, name: string, type: string) => {
 	const content = new Array(size).fill("a").join("");
@@ -28,7 +35,7 @@ describe("Dropzone Component", () => {
 	const setup = (props: object) => {
 		const childrenMock = vi.fn(({ containerProps, inputProps }) => (
 			<div {...containerProps} data-testid="dropzone-container">
-				<input {...inputProps} />
+				<input {...inputProps} data-testid="dropzone-input" />
 			</div>
 		));
 
@@ -52,7 +59,7 @@ describe("Dropzone Component", () => {
 
 		setup({ onDrop: onDropMock, onDropAccepted: onDropAcceptedMock, onDropRejected: onDropRejectedMock });
 
-		const input = screen.getByRole("textbox");
+		const input = screen.getByTestId("dropzone-input");
 
 		const file = createFile(4, "example.txt", "text/plain");
 
@@ -66,13 +73,14 @@ describe("Dropzone Component", () => {
 	it("handles drag-and-drop functionality", () => {
 		setup({ onDrop: onDropMock });
 
-		const container = screen.getByTestId("dropzone-container");
+		const input = screen.getByTestId("dropzone-input");
 
 		const file = createFile(4, "example.txt", "text/plain");
 
-		fireEvent.dragOver(container);
-		fireEvent.drop(container, {
-			dataTransfer: { files: [file] },
+		fireEvent.dragOver(input);
+
+		fireEvent.drop(input, {
+			dataTransfer: { files: setFiles([file]) },
 		});
 
 		expect(onDropMock).toHaveBeenCalledWith([file], []);
@@ -81,12 +89,11 @@ describe("Dropzone Component", () => {
 	it("should not upload file when multiple false and one file uploaded", () => {
 		setup({ onDrop: onDropMock, multiple: false });
 
-		const input = screen.getByRole("textbox");
+		const input = screen.getByTestId("dropzone-input");
 		const file1 = createFile(4, "example.txt", "text/plain");
 		const file2 = createFile(4, "examplee.txt", "text/plain");
 
-		fireEvent.change(input, { target: { files: [file1] } });
-		fireEvent.change(input, { target: { files: [file2] } });
+		fireEvent.change(input, { target: { files: [file1, file2] } });
 
 		expect(onDropMock).toHaveBeenCalledWith([file1], []);
 	});
@@ -97,13 +104,13 @@ describe("Dropzone Component", () => {
 
 		setup({ onDropRejected: onDropRejectedMock, maxFiles: 1 });
 
-		const container = screen.getByTestId("dropzone-container");
+		const input = screen.getByTestId("dropzone-input");
 
-		const file1 = new File(["content"], "file1.txt", { type: "text/plain" });
-		const file2 = new File(["content"], "file2.txt", { type: "text/plain" });
+		const file1 = createFile(5, "file.txt", "text/plain");
+		const file2 = createFile(5, "file2.txt", "text/plain");
 
-		fireEvent.drop(container, {
-			dataTransfer: { files: [file1, file2] },
+		fireEvent.change(input, {
+			target: { files: [file1, file2] },
 		});
 
 		expect(onDropRejectedMock).toHaveBeenCalledWith(
@@ -121,16 +128,16 @@ describe("Dropzone Component", () => {
 
 		setup({ onDrop: onDropMock });
 
-		const container = screen.getByTestId("dropzone-container");
+		const input = screen.getByTestId("dropzone-input");
 
-		const file = new File(["content"], "duplicate.txt", { type: "text/plain" });
+		const file = createFile(5, "example.txt", "test/plain");
 
-		fireEvent.drop(container, {
-			dataTransfer: { files: [file] },
+		fireEvent.change(input, {
+			target: { files: [file] },
 		});
 
-		fireEvent.drop(container, {
-			dataTransfer: { files: [file] },
+		fireEvent.change(input, {
+			target: { files: [file] },
 		});
 
 		expect(onDropMock).toHaveBeenCalledWith([file], []);
@@ -140,7 +147,7 @@ describe("Dropzone Component", () => {
 	it("applies custom validation messages", () => {
 		const validationMessages = [{ code: DropzoneErrorCode.FileTooLarge, message: "Custom too large message" }];
 
-		setup({ validationMessages });
+		setup({ validationMessages, maxSize: 1024 * 1024 });
 
 		expect(validator).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -157,17 +164,34 @@ describe("Dropzone Component", () => {
 	it("handles file deletion", () => {
 		const { childrenMock } = setup({});
 
-		const input = screen.getByRole("textbox");
-		const file = new File(["content"], "example.txt", { type: "text/plain" });
+		const input = screen.getByTestId("dropzone-input");
+		const file = createFile(5, "example.txt", "test/plain");
 
 		fireEvent.change(input, { target: { files: [file] } });
 
 		const { handleFileDelete } = childrenMock.mock.calls[0][0];
 
 		act(() => {
-			handleFileDelete(file);
+			handleFileDelete([file]);
 		});
 
 		expect((input as HTMLInputElement).files).toHaveLength(0);
+	});
+
+	it("should upload initial files", () => {
+		const initFile = createFile(5, "init-file.txt", "text/plain");
+
+		// initialFiles'i prop olarak geçiyoruz, setFiles kullanılmamalı
+		const childrenMock = vi.fn(({ containerProps, inputProps }) => (
+			<div {...containerProps} data-testid="dropzone-container">
+				<input {...inputProps} data-testid="dropzone-input" />
+			</div>
+		));
+
+		render(<Dropzone initialFiles={[initFile]}>{childrenMock}</Dropzone>);
+
+		const input = screen.getByTestId("dropzone-input");
+
+		expect((input as HTMLInputElement).files?.length).toBe(1);
 	});
 });
