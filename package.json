@@ -2,7 +2,7 @@
   "name": "react-dropzone-kit",
   "version": "1.0.22",
   "type": "module",
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.es.js",
   "module": "dist/index.es.js",
   "types": "dist/src/index.d.ts",
   "files": [
@@ -15,7 +15,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build"
   },
- "peerDependencies": {
+  "peerDependencies": {
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0"
   },
